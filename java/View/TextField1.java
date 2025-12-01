@@ -20,10 +20,11 @@ public class TextField1 {
         jf.setVisible(isView);
         //재정의 위치가 틀렸다.
         //isView = true;
-    }
+    }// end of initDisplay
+
     //메인메서드 구현
     public static void main(String[] args) {
         TextField1 tf1 = new TextField1();
         tf1.initDisplay();
-    }
-}
+    }// end of main
+}// end of Textfield
