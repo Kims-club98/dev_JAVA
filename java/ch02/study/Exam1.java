@@ -30,6 +30,7 @@ package ch02.study;
         - 변수 초기화(위치를 결정할 수 있다.) 하기!
 
 */
+/*
 public class Exam1 {
     //전역변수 선언하기(전역변수 위치)
     int g;
@@ -45,3 +46,4 @@ public class Exam1 {
 // ★★★ methodA, methodB는 서로 다르므로, 값(i)은 유지되지 않음
     }// end of main
 }// end of Exam1
+*/
