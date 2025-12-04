@@ -12,6 +12,13 @@ class D2{
 
 public class Dmain {
     public static void main(String[] args) {
-        D1 d1 = new D1; // main에 D1 class를 사용 가능
+        D1 d1 = new D1(); // main에 D1 class를 사용 가능
+        System.out.println(d1);
+        D1 d11 = d1;
+        System.out.println(d11);
+        System.out.println(d1==d11);
+        System.out.println(d1.equals(d11));
+        // d1, d11은 Hashcode 동일, 객체 동일함
+
     }
 }
