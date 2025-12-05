@@ -5,6 +5,7 @@
  */
 package ch06.timer;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -12,8 +13,15 @@ import java.net.Socket;
 
 public class TimeClient extends Thread {
 //  ● 생성자
+    /*
+        서버 소켓과 통신은 TimeClient에서 하고 서버소ㅔㅅ에서 써준 현재 시간정보도 TimeClient를 통해 읽어올 수 있다.(소켓통신)
+        현재 시간 정보 => TimeClent에 있고, 시간 정보에 대한 출력은 TimeDisplay에서 해야 함.
+        TimeDisplay에서 Time Client를 인스턴스화 해야 함.
+     */
+    JLabel jlb_time = null;
     public TimeClient(){
         System.out.println("TimeClient 생성자 호출");
+        this.jlb_time=jlb_time;
     }// end of TimeClient
 /*  == 정리 ==
     1. Thread가 선언하고 있는 run()을 재정의하여
@@ -35,22 +43,25 @@ public class TimeClient extends Thread {
             while(true){
                 while((time = in.readLine())!=null){
                     System.out.println(time);
+                    // TimeClient를 직접 실행하지 않고서 TimeDisplay를 인스턴스화를 함.
+                    jlb_time.setText(time); //NullPointException이 발생함.
                 }
                 try {
                     sleep(1000);
                 }catch(InterruptedException e){
-                    e.getMessage();//스레드 관련 에러 발생시 출력하기
+                    System.out.println(e.getMessage());//스레드 관련 에러 발생시 출력하기
                 }//end of inner while
             }//end of outer while
         }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }//end of run
 
 //  ○ main 메서드
     public static void main(String[] args) {
-        TimeClient timeClient = new TimeClient();// 인스턴스화 -> 다른 생성자가 호출됨.
+        //TimeClient timeClient = new TimeClient();// 인스턴스화 -> 다른 생성자가 호출됨.
         //run()직접 호출하지 않고, start()호출하면 JVM이 대신 호출을 해준다!!
-        timeClient.start();
+        //timeClient.start();
     }// end of main
 
 }// end of class TimeClient extends Thread

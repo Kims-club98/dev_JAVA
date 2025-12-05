@@ -22,6 +22,8 @@ public class TimeDisplay extends JFrame {
 
     // 화면 그리기 구성
     public void initDisplay(){
+        TimeClient timeClient = new TimeClient(jlb_time);
+        timeClient.start(); // TimeClient에 있는 run()이 호출됨
         jlb_time.setFont(font);
         jf_time.add("Center",jlb_time); // add 는 더하는 것이 아닌 붙여주세요 라는 의미.
         jf_time.setSize(400,200);

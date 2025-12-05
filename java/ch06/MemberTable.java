@@ -3,9 +3,12 @@
 
 package ch06;
 
+import ch06.timer.TimeClient;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Time;
 
 public class MemberTable {
     //1. 선언부
@@ -24,6 +27,7 @@ public class MemberTable {
     JButton btn_inert=new JButton("입력");
     JButton btn_update=new JButton("수정");
     JButton btn_delete=new JButton("삭제");
+    JLabel jlb_time=new JLabel("현재시간출력",JLabel.RIGHT);
 
     //2. 생성자
     public MemberTable(){
@@ -39,8 +43,12 @@ public class MemberTable {
         jp.add(btn_inert);
         jp.add(btn_update);
         jp.add(btn_delete);
+        TimeClient tc = new TimeClient(jlb_time, JFrame jf);
+        tc.start();// run()을 직접 호출하는 것이 아닌 start()하면 run()이 호출됨.
+
         jf.add("North",jp);
         jf.add("Center",jsp);
+        jf.add("South",jlb_time);
         jf.setSize(400,400);
         jf.setVisible(true);
 
