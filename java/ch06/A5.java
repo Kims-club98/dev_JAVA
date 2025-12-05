@@ -1,6 +1,6 @@
 //date 25.12.03 09:51
 // title: static
-package ch05;
+package ch06;
 
 public class A5 {
     // 하단 a5 => 전역변수
