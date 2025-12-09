@@ -35,6 +35,7 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
     JButton 	jbtn_down 	= new JButton("서버다운");
     JButton 	jbtn_clear 	= new JButton("로그 초기화");
 
+// ♣ 소켓 연결하기
     @Override
     public void run() {
         globalList= new ArrayList<DemoServerThread>();
@@ -42,8 +43,10 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
             // 서버 소켓 생성
             server = new ServerSocket(g_port); // ← g_port는 포트번호 동적 설정을 위해 변수 ㅓㄴ언
             jta_log.append("ServerSocket Ready......! \n");; // 줄바꿈 \n
-            while (!isStop) {
-                client = server.accept();
+            while (!isStop) {// 조건식의 False 일 때, While문에 진입 불가.
+                // ... 클라이언트가 진입 할때까지 기다림...
+                // client -> new Socket(서버IP, 포트번호)
+                client = server.accept(); //
                 System.out.println(client);
                 jta_log.append("접속해온 사람 => => "+client+"\n");
                 DemoServerThread bst = new DemoServerThread(this);
@@ -129,5 +132,29 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
             }// end of try
         }// end of 서버시작
 
+        // 서버 다운 버튼
+        else if(obj==jbtn_down){
+            jta_log.append("서버종료요청...\n");
+            // DemoServer 하나의 인스턴스에 대해서 공유됨 -> isStop-> volatile
+            // isStop 변수 => 여러 Thread에 공유되는 변수
+            // 하나의 서버 인스턴스에 대해서만 공유 if 다른 인스턴스를 하게 되면 -> 새로운 정보를 가짐.
+            // if static붙이면 ==> 하나의 프로세스에 All 공유됨!!!
+            isStop=true;// while(!isStop){...} 루프 탈출을 위한 코드
+            try{
+                // accept()를 꺠우기 위한 서버소켓을 닫기
+                if(server!=null && !server.isClosed()){
+                    server.close();
+                }if(globalList !=null){
+                    for(DemoServerThread dst : globalList){
+                        dst.closeThread();
+                    }
+                    globalList.clear();
+                }
+            }catch(Exception ex){
+                    ex.printStackTrace();
+            }// end of try (유효성검사)
+        } else if (obj==jbtn_clear) {
+                    jta_log.setText("");
+        }
     }// end of actionPerfomed
 }// end of DemoServer extend JFrame implements Runnable

@@ -53,14 +53,32 @@ public class BananaClient extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-    }
+        Object obj = e.getSource();
+        // ♣ 전송 버튼을 눌렀을 때 메시지 입력 후 Enter
+        if(obj==jtf_msg||obj==jbtn_send){
+            try{oos. writeObject(200+"#"+nickName+"#"+jtf_msg.getText());
+                jtf_msg.setText("");
+            }catch(Exception ex){
+                System.out.println(ex.getMessage());
+            // end of try(유효성 검사)
+            }else if (obj==jbtn_exit) {
+            try{
+                oos.writeObject(500 + "#" + nickName);
+                System.exit(0);
+            }catch(Exception ex){
+                System.out.println(ex.getMessage());
+            }// end of if(enter & 전송버튼 클릭 시)
+        }
+    }// end of actionPerformed
 
     public static void main(String[] args) {
-        BananaClient bc = new BananaClient();
-        //메서드 호출 순서를 반드시 지킬 것. 왜냐하면 init()먼저 하면 지연이 발생함.
-        bc.initDisplay();
-        bc.init();
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            BananaClient bc = new BananaClient();
+            //메서드 호출 순서를 반드시 지킬 것. 왜냐하면 init()먼저 하면 지연이 발생함.
+            bc.initDisplay();
+            bc.init();
+        }
+
     }// end of main
     //  L 메서드 호출 순서를 지켜야 한다(Display -> init) 반대로 수행 시 "지연"이 발생할 수 있음.
 
@@ -77,8 +95,11 @@ public class BananaClient extends JFrame implements ActionListener {
             ois= new ObjectInputStream(socket.getInputStream());
             // 서버에 입장한 사실을 알리기
             oos.writeObject(100+"#"+nickName);
+            //  서버에서 한 말을 듣기 위한 준비
+            BananaClientThread bct= new BananaClientThread(this);
+            bct.start();
         }catch (Exception e){
-
+            System.out.println(e.getMessage());
         }// end of try
     }//end of init
 
@@ -122,5 +143,17 @@ public class BananaClient extends JFrame implements ActionListener {
         this.setTitle(nickName+"님의 대화창");
         this.setSize(800, 550);
         this.setVisible(true);
+        jbtn_one.setBackground(new Color(158,9,9));
+        jbtn_one.setForeground(new Color(212,212,212));
+        jbtn_change.setBackground(new Color(7,84,170));
+        jbtn_change.setForeground(new Color(212,212,212));
+        jbtn_color.setBackground(new Color(19, 99, 57));
+        jbtn_color.setForeground(new Color(212, 212, 212));
+        jbtn_emoticon.setBackground(new Color(121, 85, 72));   // 모던 초콜릿 브라운
+        jbtn_emoticon.setForeground(new Color(255, 248, 240)); // 크림 화이트
+        jbtn_logout.setBackground(new Color(255, 255, 200));
+        jbtn_logout.setForeground(new Color(57, 57, 57));
+        jbtn_exit.setBackground(new Color(54, 54, 54));
+        jbtn_exit.setForeground(new Color(212, 212, 212));
     }//end of initDisplay
 }

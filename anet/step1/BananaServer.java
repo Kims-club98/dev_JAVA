@@ -49,6 +49,7 @@ public class BananaServer extends JFrame implements Runnable{
     }//end of run
 
     public static void main(String[] args) {
+        JFrame.setDefaultLookAndFeelDecorated(true);
         BananaServer bs = new BananaServer();
         bs.initDisplay();
         // main스레드가 아닌 다른 하나의 스레드가 있음.
