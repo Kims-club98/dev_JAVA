@@ -18,7 +18,7 @@ public class DemoClient extends JFrame implements ActionListener {
     String        nickName = null;
     public void init(){
         try {
-                      socket = new Socket("127.0.0.1",5000);
+                      socket = new Socket("127.0.0.1",3000);
                       ois = new ObjectInputStream(socket.getInputStream()); // 말하기 input
                       oos = new ObjectOutputStream(socket.getOutputStream()); // 청취 output
                       // 내가 접속한 사실을 상대에게 알린다.
@@ -27,8 +27,6 @@ public class DemoClient extends JFrame implements ActionListener {
             e.printStackTrace();
         }// end of try
     }// end of init ㉡
-
-
     public static void main(String[] args) {
         DemoClient dc=new DemoClient(); // 인스턴스화 -> 전변에서 메서드를 가져와서 써야지!~
         dc.initDisplay(); // 화면으로 출력하기 ㉠
@@ -37,7 +35,9 @@ public class DemoClient extends JFrame implements ActionListener {
 
     public void initDisplay(){
         nickName=JOptionPane.showInputDialog(this,"닉네임을 입력하세요!");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }// end of initDisplay ㉠ => 실행 시 서버가 연결되기 전까지 연결.
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

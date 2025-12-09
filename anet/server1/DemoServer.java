@@ -19,7 +19,7 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
             , JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     Font f = new Font("돋움체", Font.BOLD,20);
     private volatile boolean isStop =false;
-    int g_pot=0;// ← 포트번호를 동적으로 처리하기
+    int g_port=0;// ← 포트번호를 동적으로 처리하기
 
 
     //서버로그 화면 바로 위에 배치할 속지선언
@@ -40,12 +40,15 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
         globalList= new ArrayList<DemoServerThread>();
         try {
             // 서버 소켓 생성
-            server = new ServerSocket(g_pot); // ← g_pot는 포트번호 동적 설정을 위해 변수 ㅓㄴ언
-            System.out.println("ServerSocket Ready...!\n"); // 줄바꿈 \n
+            server = new ServerSocket(g_port); // ← g_port는 포트번호 동적 설정을 위해 변수 ㅓㄴ언
+            jta_log.append("ServerSocket Ready......! \n");; // 줄바꿈 \n
             while (!isStop) {
                 client = server.accept();
                 System.out.println(client);
+                jta_log.append("접속해온 사람 => => "+client+"\n");
                 DemoServerThread bst = new DemoServerThread(this);
+                globalList.add(bst);
+                jta_log.append("현재 인원 수 : "+globalList.size()+"\n");
                 bst.start();
             }// end of while
         } catch (Exception e) {
@@ -59,7 +62,7 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
             try{
                 if(server!=null && !server.isClosed()){
                     server.close();
-                }
+                }// end of if
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }// end of inner try
@@ -107,12 +110,23 @@ public class DemoServer extends JFrame implements Runnable, ActionListener {
         // 서버 기동 버튼 참 -> 눌렀다!
         if(obj==jbtn_start){
             // 예외처리가 필요한 경우: 숫자가 아닌 문자열인 경우 예외처리 必(NumException ex)
-            try{
+            try {
                 // -> 이미 서버가 가동 중이라면 다시 시작되지 않도록 처리하는 함수
-                jta_log.append("현재 "+g_pot+"번 포트가 가동 중...!");
+                if (server != null && server.isClosed()) {
+                    jta_log.append("이미 서버가 기동중입니다...! \n");
+                    // 서버가 이미 가동중이면 port 번호로 개설이 안됨.
+                    // 다음 코드를 실행할 필요가 없음.(이때 braeak가 아닌 return을 사용함)
+                    return;
+                }// end of if
+                // 사용자가 JTextField에 입력한 포트번호를 문자령이므로 숫자형으로 전환.
+                g_port = Integer.parseInt(jtf_port.getText());
+                // 새로운 서버의 시작이므로 초기화를 해줘야 한다. - false
+                isStop=false;
+                Thread th = new Thread(this);
+                th.start();
             }catch(NumberFormatException nfe) {
                 jta_log.append("포트 번호를 숫자로 입력하세요...!\n");
-            }
+            }// end of try
         }// end of 서버시작
 
     }// end of actionPerfomed
