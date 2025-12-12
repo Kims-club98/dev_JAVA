@@ -15,6 +15,8 @@ public class MemberVO {
     private String mem_name = null;//이름 저장
     private String mem_nickname = null;//닉네임 저장
     private int    mem_age = 0;//나이
+    private String gender = null;
+
 
     public String getMem_nickname() {
         return mem_nickname;

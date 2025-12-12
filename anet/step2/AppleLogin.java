@@ -1,18 +1,13 @@
-package aTalk.step1;
-// 스레드, 생성자, 인스턴스화, IO패키지, 변수, 자료구조(Map,List,Set)
-import java.awt.Font;
-import java.awt.Graphics;
+package anet.step2;
+
+import aTalk.step1.LoginForm;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
-public class LoginForm extends JFrame implements ActionListener {
+public class AppleLogin extends JFrame implements ActionListener {
     String imgPath = "src\\image\\";
     ImageIcon ig 		= new ImageIcon(imgPath+"main.png");
     JLabel jlb_id 		= new JLabel("아이디");
@@ -27,8 +22,32 @@ public class LoginForm extends JFrame implements ActionListener {
             new JButton(
                     new ImageIcon(imgPath+"confirm.png"));
     String 				nickName= null;//닉네임 등록
-    LoginForm(){
+    AppleClient ac = null;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object obj = e.getSource();
+        //로그인 요청하기
+        if (obj == jbtn_login) {
+            //사용자가 입력한 아이디 담기
+            String mem_id = jtf_id.getText();
+            //사용자가 입력한 비번 담기
+            String mem_pw = jtf_pw.getText();
+            AppleDaoV2 aDao = new  AppleDaoV2();
+            nickName = aDao.login(mem_id,mem_pw);
+            //AppleClient 인스턴스화 할 때 조회된 대화명을 넘겨야 함.
+            this.dispose();
+            ac = new AppleClient(nickName);
+        }//end of 로그인
+        //회원가입 요청
+        else if(obj == jbtn_join) {
+            AppleMemberShip ams = new AppleMemberShip();
 
+        }//end of 회원가입
+    }
+
+    public static void main(String[] args) {
+        AppleLogin aLogin = new AppleLogin();
+        aLogin.initDisplay();
     }
     //내부 클래스로 배경 이미지 처리
     class MyPanel extends JPanel{
@@ -38,7 +57,7 @@ public class LoginForm extends JFrame implements ActionListener {
             super.paintComponent(g);
         }
     }
-    public void initDisplay() {
+    public void initDisplay(){
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         jbtn_login.addActionListener(this);
         jbtn_join.addActionListener(this);
@@ -63,12 +82,5 @@ public class LoginForm extends JFrame implements ActionListener {
         this.setSize(350, 600);
         this.setVisible(true);
     }
-    public static void main(String[] args) {
-        LoginForm login = new LoginForm();
-        login.initDisplay();
-    }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object obj = e.getSource();
-    }
+
 }
