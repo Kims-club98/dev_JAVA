@@ -44,12 +44,16 @@ public class AppleClient extends JFrame implements ActionListener {
     JButton jbtn_emoticon 	= new JButton("이모티콘");
     JButton jbtn_exit 		= new JButton("종료");
 
-    String nickName = null;
-    public AppleClient(String[] user) {
-        this.nickName = user[1];
+    String nickName=null;
+    String[] user=null;
+    AppleDaoV2 aDao= new AppleDaoV2();
+    public AppleClient(String[]user){
+        this.nickName=user[1];
+        this.user=user;
         initDisplay();
         init();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object obj = e.getSource();
@@ -63,6 +67,15 @@ public class AppleClient extends JFrame implements ActionListener {
                         , "변경할 대화명을 입력하세요","warn", JOptionPane.WARNING_MESSAGE);
                 return;//actionPerformed() 탈출한다.
             }//end of if
+            //오라클 서버에 접속하여 새로 입력받은 대화명으로 수정하기
+            int result =-1;
+            try{
+                result = aDao.nickNameChange(user[0], afterName);
+                logger("result 1이면 수정성공, 0이면 수정실패"+result);
+            }catch(Exception ex){ex.getMessage();
+            }finally {
+            }// end of try .. catch .. finally
+            ////////////////////// [[ 서버 소켓 전송하기 ]] ///////////////////////////////////
             try {
                 oos.writeObject(Protocol.CHANGE
                         +"#"+nickName+"#"+afterName
