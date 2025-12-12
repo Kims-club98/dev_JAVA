@@ -30,8 +30,8 @@ public class AppleClient extends JFrame implements ActionListener {
     JButton 	jbtn_send 		= new JButton("전송");
     JPanel 		jp_second 		= new JPanel();
     JPanel 		jp_second_south = new JPanel();
-    String      cols[] = {"대화명"};
-    String      data[][] = new String[0][1];
+    String      cols[] = {"아이디","대화명"};
+    String      data[][] = new String[0][2];
     DefaultTableModel dtm = new DefaultTableModel(data,cols);
     JTable jtb = new JTable(dtm);
     JScrollPane jsp 	= new JScrollPane(jtb
@@ -45,8 +45,8 @@ public class AppleClient extends JFrame implements ActionListener {
     JButton jbtn_exit 		= new JButton("종료");
 
     String nickName = null;
-    public AppleClient(String nickName) {
-        this.nickName = nickName;
+    public AppleClient(String[] user) {
+        this.nickName = user[1];
         initDisplay();
         init();
     }
@@ -54,7 +54,25 @@ public class AppleClient extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object obj = e.getSource();
         String msg = jtf_msg.getText();
-        if(obj == jbtn_one){
+        if(obj == jbtn_change) {
+            //변경할 대화명을 입력 받아야 한다.
+            String afterName = JOptionPane.showInputDialog("변경할 대화명을 입력하세요.");
+            //대화명이 널 이거나 문자열의 길이가 얼마인지 체크 - 입력한 값에 대한 유효성 검사(Front-End)
+            if(afterName == null || afterName.length() == 0) {
+                JOptionPane.showMessageDialog(this
+                        , "변경할 대화명을 입력하세요","warn", JOptionPane.WARNING_MESSAGE);
+                return;//actionPerformed() 탈출한다.
+            }//end of if
+            try {
+                oos.writeObject(Protocol.CHANGE
+                        +"#"+nickName+"#"+afterName
+                        +"#"+nickName+"님의 대화명이 "+afterName+"으로 변경"
+                );
+            }catch(Exception ex) {
+                ex.printStackTrace();
+                logger(ex.toString());//XXXException
+            }
+        }else if(obj == jbtn_one){
             int row = jtb.getSelectedRow();
             //상대를 선택하지 않았을 때
             if(row == -1){
@@ -120,7 +138,8 @@ public class AppleClient extends JFrame implements ActionListener {
 
     }
     public static void main(String[] args) {
-        //AppleClient appleClient = new AppleClient("apple");
+        AppleClient appleClient = new AppleClient(new String[]{"kiwi","키위나무"});
+
     }
     public void initDisplay(){
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -129,6 +148,8 @@ public class AppleClient extends JFrame implements ActionListener {
         jtf_msg.addActionListener(this);
         jbtn_send.addActionListener(this);
         jbtn_exit.addActionListener(this);
+        jbtn_one.addActionListener(this);
+        jbtn_change.addActionListener(this);
         jbtn_one.setBackground(new Color(158,9,9));
         jbtn_one.setForeground(new Color(212,212,212));
         jbtn_change.setBackground(new Color(7,84,170));

@@ -5,6 +5,7 @@ import java.util.Vector;
 import static util.CustomLogger.logger;
 
 public class AppleClientThread extends Thread {
+    // 000 user[] = new 000 []{}
     AppleClient ac = null;
     private volatile  boolean isRun = false;
     public AppleClientThread(AppleClient ac) {
@@ -24,33 +25,56 @@ public class AppleClientThread extends Thread {
                     protocol = Integer.parseInt(st.nextToken());//100, 200, 500
                 }//end of if
                 switch(protocol){
-                    case 100:{
+                    case Protocol.CHANGE:{
+                        String nickName=st.nextToken();
+                        String afterName=st.nextToken();
+                        String message=st.nextToken();
+                        //DefaultTableModel에 있는 대화명 변경하기
+                        for (int i = 0; i <ac.dtm.getRowCount(); i++) {
+                            // 대화명을 변경하기 전에 현재 테이블에서 가져온 대화명을 받기
+                            String cname = (String)ac.dtm.getValueAt(i,0);
+                            if (cname.equals(nickName)){
+                                ac.dtm.setValueAt(afterName,i,0);
+                                break; // for문을 빠져나감.
+                            }// end of if
+                        } // end of for
+                        ac.jta_display.append(message+"\n"); // <- 열린 채팅창의 타이틀 바에 적힌 대화명 변경하기.
+                        if (nickName.equals(ac.nickName)) {
+                            ac.setTitle(afterName+"님의 대화창");
+                            ac.nickName = afterName;
+                        }
+                    } // end of case CHANGE
+                    case Protocol.ROOM_IN:{
                         String nickName = st.nextToken();
                         ac.jta_display.append(nickName+"님이 입장하였습니다.\n");
                         logger(nickName+"님이 입장하였습니다.");
-                        Vector<String> v = new Vector<String>();
-                        v.add(nickName);
-                        ac.dtm.addRow(v);
+                        logger(ac.user[0]+","+ac.user[1]);
+                        // 하단은 String이여서 적어야 했던 부분, So 배열이면 이것 대신 ac.dtm.addRow(ac.user)를 적으면 됨.
+                        //Vector<String> v = new Vector<String>();
+                        //v.add(nickName);
+                        ac.dtm.addRow(ac.user);
                     }break;
-                    case 200:{//200#키위#오늘 스터디할까?
+                    case Protocol.MESSAGE:{//200#키위#오늘 스터디할까?
                         String nickName = st.nextToken();
                         String message = st.nextToken();
                         ac.jta_display.append("[ "+nickName+" ] "+message+"\n");
                         logger("[ "+nickName+" ] "+message);
                         ac.jta_display.setCaretPosition(ac.jta_display.getDocument().getLength());
                     }break;
-                    //case문 마다 {}로 스코프 준 이유는 우리가 같은 프로토콜정보를 사용하므로
-                    //동일한 이름의 변수 사용이 불가피하다.- 그래서 사용함.
+                    //-> 300#누가#누구에게#메시지
                     case Protocol.WHISPER:{
+                        logger("1:1대화");
                         String nickName = st.nextToken();
-                        String otherName = st. nextToken();
+                        String otherName = st.nextToken();
                         String message = st.nextToken();
-                        ac.jta_display.append(nickName+"님이"+otherName+"님에게"+message+"\n");
+                        ac.jta_display.append(nickName+"님이 "
+                                +otherName+"님에게 "+message+"\n");
                         //커서 이동이 자동으로 처리되도록 하기
                         ac.jta_display.setCaretPosition(ac.jta_display.getDocument().getLength());
                     }break;
-
-                    case 500:{
+                    //case문 마다 {}로 스코프 준 이유는 우리가 같은 프로토콜정보를 사용하므로
+                    //동일한 이름의 변수 사용이 불가피하다.- 그래서 사용함.
+                    case Protocol.ROOM_OUT:{
                         String nickName = st.nextToken();
                         ac.jta_display.append(nickName+"님이 퇴장하였습니다.\n");
                         ac.jta_display.setCaretPosition(ac.jta_display.getDocument().getLength());

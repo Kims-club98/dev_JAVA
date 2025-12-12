@@ -1,7 +1,5 @@
 package anet.step2;
 
-import jdbc.MemberVO;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -8,7 +8,7 @@ public class MemberVO {
     private String mem_pw      = null;//비번
     private String gender      = null;//성별 남자 or 여자
     private String zipcode     = null;//우편번호
-    private String address     = null;//전체주소
+    private String address     = null;//전체주소  
     public String getMem_id() {
         return mem_id;
     }

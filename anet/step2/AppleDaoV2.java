@@ -1,6 +1,5 @@
 package anet.step2;
 
-import jdbc.MemberVO;
 import util.DBConnectionMgr;
 
 import java.sql.Connection;
@@ -26,10 +25,11 @@ public class AppleDaoV2 {
      * @param userPw 사용자가 입력한 비번
      * @return 로그인 성공 후 조회된 닉네임
      *************************************************************/
-    public String login(String userId, String userPw){
+    public String[] login(String userId, String userPw){
+        String user[] = new String[]{null,null};
         String nickName = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT mem_nickname  ");
+        sql.append("SELECT mem_id,mem_nickname  ");
         sql.append(" FROM member          ");
         sql.append(" WHERE mem_id =?");
         sql.append(" AND mem_pw =?");
@@ -40,8 +40,10 @@ public class AppleDaoV2 {
             pstmt.setString(2, userPw);
             rs = pstmt.executeQuery();
             if(rs.next()){
-                nickName = rs.getString("mem_nickname");
+                user[0]=rs.getString("mem_id");
+                user[1]=rs.getString("mem_nickname");
             }
+            logger(user[0]+","+user[1]);
             System.out.println("nickName : "+nickName);
         }catch(Exception e){
             System.out.println(e.toString());
@@ -49,7 +51,7 @@ public class AppleDaoV2 {
             dbMgr.freeConnection(con,pstmt,rs);
         }
         //return "대화명";
-        return nickName;
+        return user;
     }
     /*************************************************************
      * 제목 : 회원가입 구현하기

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AppleLogin extends JFrame implements ActionListener {
-    String imgPath = "src\\image\\";
+    String imgPath = "..\\..\\image";
     ImageIcon ig 		= new ImageIcon(imgPath+"main.png");
     JLabel jlb_id 		= new JLabel("아이디");
     JTextField jtf_id 	= new JTextField("test");
@@ -32,11 +32,13 @@ public class AppleLogin extends JFrame implements ActionListener {
             String mem_id = jtf_id.getText();
             //사용자가 입력한 비번 담기
             String mem_pw = jtf_pw.getText();
+
             AppleDaoV2 aDao = new  AppleDaoV2();
-            nickName = aDao.login(mem_id,mem_pw);
+            String[] user = aDao.login(mem_id,mem_pw);
             //AppleClient 인스턴스화 할 때 조회된 대화명을 넘겨야 함.
+            nickName= user[1];
             this.dispose();
-            ac = new AppleClient(nickName);
+            ac = new AppleClient(user);
         }//end of 로그인
         //회원가입 요청
         else if(obj == jbtn_join) {
